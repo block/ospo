@@ -1,0 +1,103 @@
+name: Security and License Scans
+
+on:
+  workflow_call:
+
+jobs:
+  fossa-scan:
+    name: FOSSA Scanning Kickoff
+    runs-on: ubuntu-latest
+    outputs:
+      fossaScanResults: ${{ steps.fossa_test.outputs.results }}
+
+    if: ${{ github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@b4ffde65f46336ab88eb53be808477a3936bae11 # v4.1.1
+        with:
+          ref: ${{ github.head_ref }}
+
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: us-west-2
+          role-to-assume: arn:aws:iam::905418428715:role/fossa-branch
+
+      - name: Get FOSSA API key
+        uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: fossa
+          parse-json-secrets: true # will produce env variables named FOSSA_<json key>
+
+      - name: Run FOSSA Scan
+        uses: fossas/fossa-action@47ef11b1e1e3812e88dae436ccbd2d0cbd1adab0 # v1.3.3
+        with:
+          api-key: ${{ env.FOSSA_API_KEY }}
+
+      - name: Run FOSSA Test
+        id: fossa_test
+        run: |
+          set -x
+          DIFF_OPTION=""
+          MAIN_BRANCH="main"
+          MAIN_BRANCH_REF="refs/heads/$MAIN_BRANCH"
+
+          CURRENT_BRANCH_REF="${{ github.head_ref || github.ref }}"
+          echo "Current Branch: $CURRENT_BRANCH_REF"
+
+          if [ "$CURRENT_BRANCH_REF" != "$MAIN_BRANCH_REF" ]; then
+            git fetch origin $MAIN_BRANCH
+            MAIN_SHA=$(git rev-parse origin/$MAIN_BRANCH)
+            DIFF_OPTION="--diff $MAIN_SHA"
+          fi
+
+          fossa test --format json $DIFF_OPTION | tee fossa-test.json
+
+          FOSSA_RESULTS=$(cat fossa-test.json)
+          if [ -z "$FOSSA_RESULTS" ]; then
+            echo "Failed to generate FOSSA Scanning Results"
+            exit 1
+          fi
+
+          echo "results=$FOSSA_RESULTS" >> $GITHUB_OUTPUT
+
+  fossa-security-check:
+    name: FOSSA Security Check
+    needs: fossa-scan
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+    steps:
+      - name: Check Security Issues
+        run: |
+          ISSUES=$(echo '${{ needs.fossa-scan.outputs.fossaScanResults }}' | jq '.issues | map(select(.type | IN("unlicensed_dependency", "policy_conflict", "policy_flag") | not))')
+          ISSUES_LEN=$(echo $ISSUES | jq length)
+          if [ $ISSUES_LEN -gt 0 ]; then
+            echo "FOSSA Security Check failed"
+            echo "Issues found:\n$ISSUES"
+            echo '${{ needs.fossa-scan.outputs.fossaScanResults }}'
+            exit 1
+          fi
+
+  fossa-license-check:
+    name: FOSSA Licenses Check
+    needs: fossa-scan
+    runs-on: ubuntu-latest
+
+    if: ${{ github.event_name != 'pull_request_target' || github.event.pull_request.head.repo.full_name == github.repository }}
+
+    steps:
+      - name: Check License Issues
+        run: |
+          ISSUES=$(echo '${{ needs.fossa-scan.outputs.fossaScanResults }}' | jq '.issues | map(select(.type | IN("unlicensed_dependency", "policy_conflict", "policy_flag")))')
+          ISSUES_LEN=$(echo $ISSUES | jq length)
+          if [ $ISSUES_LEN -gt 0 ]; then
+            echo "FOSSA License Check failed"
+            echo "Issues found: $ISSUES"
+            echo '${{ needs.fossa-scan.outputs.fossaScanResults }}'
+            exit 1
+          fi
