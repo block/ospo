@@ -1,74 +1,185 @@
 ---
-import type { CollectionEntry } from 'astro:content';
+import type { CollectionEntry } from "astro:content";
 
-import ProjectBadge from './ProjectBadge.astro';
-import ProjectDetailsPackages from './ProjectDetailsPackages.astro';
+import ProjectBadge from "./ProjectBadge.astro";
+import ProjectDetailsPackages from "./ProjectDetailsPackages.astro";
+import BrandingLogo from "./BrandingLogo.astro";
 
-type Props = CollectionEntry<'project'>['data'];
+type Props = CollectionEntry<"project">["data"];
 
-const { title, description, repo, ciChecks, licenses, securityScans, scoreCards, sastChecks, tests, packages } = Astro.props;
+const {
+  title,
+  description,
+  branding,
+  repo,
+  ciChecks,
+  licenses,
+  securityScans,
+  scoreCards,
+  tests,
+  packages,
+  lifeCycleStatus,
+  contributing,
+} = Astro.props;
 ---
+
 <div class="project-details">
+  <div class="project-details-header">
     <h3 id={`${repo.owner}_${repo.name}`}>{title ?? repo.name}</h3>
-    {description}<br/>
-    <small>
-        <a href={`https://github.com/${repo.owner}/${repo.name}`}>
-            {repo.owner}/{repo.name}
-        </a>
-    </small>
-    <div class="project-details-cards-grid">
-        {ciChecks && <div class="project-details-card">
-            <h4>CI Checks</h4>
-            {ciChecks.map(ciCheck => <ProjectBadge repo={repo} badge={ciCheck} />)}
-        </div>}
-        {licenses && <div class="project-details-card">
-            <h4>Licenses</h4>
-            {licenses.map(license => <ProjectBadge repo={repo} badge={license} />)}
-        </div>}
-        {securityScans && <div class="project-details-card">
-            <h4>Security Scans</h4>
-            {securityScans.map(securityScan => <ProjectBadge repo={repo} badge={securityScan} />)}
-        </div>}
-        {scoreCards && <div class="project-details-card">
-            <h4>Score Cards</h4>
-            {scoreCards.map(scoreCard => <ProjectBadge repo={repo} badge={scoreCard} />)}
-        </div>}
-        {sastChecks && <div class="project-details-card">
-            <h4>SAST Checks</h4>
-            {sastChecks.map(sastCheck => <ProjectBadge repo={repo} badge={sastCheck} />)}
-        </div>}
-        {tests && <div class="project-details-card">
-            <h4>Tests</h4>
-            {tests.map(test => <ProjectBadge repo={repo} badge={test} />)}
-        </div>}
-    </div>
-    {packages && packages.length > 0 && <ProjectDetailsPackages packages={packages} repo={repo} />}
+    <BrandingLogo branding={branding} />
+  </div>
+  <div class="project-details-header-badges">
+    <ProjectBadge
+      repo={repo}
+      badge={{
+        type: "github-repo",
+      }}
+    />
+    <ProjectBadge
+      repo={repo}
+      badge={{
+        type: "life-cycle-status",
+        value: lifeCycleStatus,
+      }}
+    />
+    {
+      licenses &&
+        licenses.map((license) => <ProjectBadge repo={repo} badge={license} />)
+    }
+    {
+      scoreCards &&
+        scoreCards.map((scoreCard) => (
+          <ProjectBadge repo={repo} badge={scoreCard} />
+        ))
+    }
+  </div>
+  <p>{description}</p>
+  <div class="project-details-cards-grid">
+    {
+      ciChecks && (
+        <div class="project-details-card">
+          <h4>CI Workflows</h4>
+          <div class="project-details-card-badges">
+            {ciChecks.map((ciCheck) => (
+              <ProjectBadge repo={repo} badge={ciCheck} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    {
+      securityScans && (
+        <div class="project-details-card">
+          <h4>Security Scans</h4>
+          <div class="project-details-card-badges">
+            {securityScans.map((securityScan) => (
+              <ProjectBadge repo={repo} badge={securityScan} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    {
+      tests && (
+        <div class="project-details-card">
+          <h4>Tests</h4>
+          <div class="project-details-card-badges">
+            {tests.map((test) => (
+              <ProjectBadge repo={repo} badge={test} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+    {
+      contributing && (
+        <div class="project-details-card">
+          <h4>Contributing Channels</h4>
+          <div class="project-details-card-badges">
+            {contributing.map((contributing) => (
+              <ProjectBadge repo={repo} badge={contributing} />
+            ))}
+          </div>
+        </div>
+      )
+    }
+  </div>
+  {
+    packages && packages.length > 0 && (
+      <ProjectDetailsPackages packages={packages} repo={repo} />
+    )
+  }
 </div>
 
 <style>
-    .project-details {
-        margin-bottom: 2em;
-    }
+  .project-details {
+    margin-bottom: 2em;
+  }
 
-    .project-details h3 {
-        font-size: 1.5em;
-    }
+  .project-details h3 {
+    font-size: 1.5em;
+  }
 
-    .project-details h4 {
-        font-size: 1em;
-    }
+  .project-details h4 {
+    font-size: 1em;
+  }
 
-    .project-details-cards-grid {
-        margin-top: 1em;
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 1em;
-    }
+  .project-details-cards-grid {
+    margin-top: 1em;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, 380px);
+    gap: 1em;
+  }
 
-    .project-details-card {
-        border: 1px solid lightgray;
-        border-radius: 4px;
-        padding: 1.2em;
-        min-height: 128px;
-    }
+  .project-details-card {
+    border: 1px solid lightgray;
+    border-radius: 4px;
+    padding: 1.2em;
+    min-height: 128px;
+    display: flex; /* Add flex display */
+    flex-direction: column; /* Allow wrapping if needed */
+    align-items: flex-start; /* Vertically center items */
+  }
+
+  .project-details-card h4 {
+    margin-top: 0;
+    margin-bottom: 1em;
+  }
+
+  .project-details-card-badges {
+    flex: 1;
+    display: flex;
+    flex-direction: row; /* ensure horizontal layout */
+    flex-wrap: wrap;
+    gap: 0 10px;
+    align-items: flex-start;
+  }
+
+  .project-details-header {
+    display: flex;
+    gap: 1em;
+    margin-bottom: 0.5em;
+  }
+
+  .project-details-header h3 {
+    margin: 0;
+    white-space: nowrap;
+    display: flex;
+    align-items: baseline;
+  }
+
+  .project-details-header-badges {
+    display: flex;
+    gap: 0.5em;
+    align-items: baseline;
+    transform: translateY(0.25em);
+    padding-bottom: 0.1em; /* Optional: fine-tune vertical alignment */
+  }
+
+  .project-details-repo-line {
+    display: flex;
+    gap: 0.5em;
+    align-items: center;
+    font-size: 0.8em;
+  }
 </style>
