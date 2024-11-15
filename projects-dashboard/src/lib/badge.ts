@@ -1,4 +1,4 @@
-import type { BadgeType } from "../content/config";
+import type { BadgeType, LifeCycleStatus } from "../content/config";
 
 interface Repo {
   owner: string;
@@ -24,7 +24,7 @@ function getGithubActionsBadge(
 }
 
 function getGithubLicenseBadge(repo: Repo): [string, string] {
-  const badgeSrc = `https://img.shields.io/github/license/${repo.owner}/${repo.name}?style=flat-square&logo=github&color=4c1&label=gh`;
+  const badgeSrc = `https://img.shields.io/github/license/${repo.owner}/${repo.name}?style=flat-square&color=4c1&label=license`;
   const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/LICENSE`;
   return [badgeSrc, href];
 }
@@ -90,6 +90,79 @@ function getReferenceDocsBadge(value?: string): [string, string] {
   return [badgeSrc, href];
 }
 
+function getCodeOfConductBadge(repo: Repo, value?: string): [string, string] {
+  const badgeSrc = `https://img.shields.io/badge/Code of Conduct-blue?style=flat-square`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/${value}`;
+  return [badgeSrc, href];
+}
+
+function getContributionGuidelinesBadge(repo: Repo, value?: string): [string, string] {
+  const badgeSrc = `https://img.shields.io/badge/Contribution Guidelines-orange?style=flat-square`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/${value}`;
+  return [badgeSrc, href];
+}
+
+function getDiscordBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("Discord URL is required for badge");
+  }
+  const badgeSrc = `https://img.shields.io/badge/Discord-purple?style=flat-square&logo=discord&logoColor=FFFFFF`;
+  const href = value;
+  return [badgeSrc, href];
+}
+
+function getMailingListBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("Mailing list URL is required for badge");
+  }
+  const badgeSrc = `https://img.shields.io/badge/Mailing List-pink?style=flat-square&logo=mailboxdotorg&logoColor=FFFFFF`;
+  const href = value;
+  return [badgeSrc, href];
+}
+
+function getLifeCycleStatusBadge(value?: string): [string, string] {
+  const badgeLabel = "Life Cycle Status";
+  const badgeValue = value ?? "empty";
+  let badgeColor = "";
+  switch (badgeValue) {
+    case "proposal":
+      badgeColor = "yellow";
+      break;
+    case "incubation":
+      badgeColor = "blue";
+      break;
+    case "mature":
+      badgeColor = "green";
+      break;
+    case "core":
+      badgeColor = "purple";
+      break;
+    case "archived":
+      badgeColor = "red";
+      break;
+    default:
+      badgeColor = "lightgrey";
+      break;
+  }
+  const badgeSrc = `https://img.shields.io/badge/${badgeLabel}-${badgeValue}-${badgeColor}?style=flat-square`;
+  const href = "";
+  return [badgeSrc, href];
+}
+
+function getGithubRepoBadge(repo: Repo): [string, string] {
+  const badgeValue = `${repo.owner}/${repo.name.replaceAll("-", "--")}`;
+  const badgeColor = "gray";
+  const badgeSrc = `https://img.shields.io/badge/-${badgeValue}-${badgeColor}?style=flat-square&logo=github`;
+  const href = `https://github.com/${repo.owner}/${repo.name}`;
+  return [badgeSrc, href];
+}
+
+function getIssuesBadge(repo: Repo): [string, string] {
+  const badgeSrc = `https://img.shields.io/github/issues/${repo.owner}/${repo.name}?style=flat-square`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/issues`;
+  return [badgeSrc, href];
+}
+
 export function getBadgeInfo(
   repo: Repo,
   type: BadgeType,
@@ -119,6 +192,20 @@ export function getBadgeInfo(
       return getMavenBadge(value);
     case "reference-docs":
       return getReferenceDocsBadge(value);
+    case "life-cycle-status":
+      return getLifeCycleStatusBadge(value);
+    case "github-repo":
+      return getGithubRepoBadge(repo);
+    case "code-of-conduct":
+      return getCodeOfConductBadge(repo, value);
+    case "contribution-guidelines":
+      return getContributionGuidelinesBadge(repo, value);
+    case "discord":
+      return getDiscordBadge(value);
+    case "mailing-list":
+      return getMailingListBadge(value);
+    case "issues":
+      return getIssuesBadge(repo);
     default:
       return [
         getDefaultBadgeSource(type, label ?? "badge", value ?? "value"),

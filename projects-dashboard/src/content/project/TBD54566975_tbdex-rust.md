@@ -1,9 +1,11 @@
 ---
-title: "tbDEX Rust"
 repo:
   owner: "TBD54566975"
   name: "tbdex-rs"
+title: "tbDEX Rust"
 description: "The tbDEX Rust implementation"
+branding: "tbd"
+lifeCycleStatus: "archived"
 ciChecks:
   - type: "github-actions"
     label: "ci"
@@ -11,9 +13,6 @@ ciChecks:
 licenses:
   - type: "github-license"
 securityScans:
-  - type: "github-actions"
-    label: "scan"
-    value: "security.yml"
   - type: "fossa-license"
   - type: "fossa-security"
 tests:

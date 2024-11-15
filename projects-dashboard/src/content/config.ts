@@ -41,6 +41,7 @@ const packageSchema = z.object({
 
 const badgeTypeSchema = z.enum([
   "github-actions",
+  "github-repo",
   "github-license",
   "github-tag",
   "fossa-license",
@@ -51,6 +52,12 @@ const badgeTypeSchema = z.enum([
   "npm",
   "maven",
   "reference-docs",
+  "life-cycle-status",
+  "code-of-conduct",
+  "contribution-guidelines",
+  "issues",
+  "discord",
+  "mailing-list",
 ]);
 
 export type BadgeType = z.infer<typeof badgeTypeSchema>;
@@ -62,17 +69,38 @@ const badgeSchema = z.object({
 
 export type Badge = z.infer<typeof badgeSchema>;
 
+const lifeCycleStatusSchema = z.enum([
+  "proposal",
+  "incubation",
+  "mature",
+  "core",
+  "archived",
+]);
+
+export type LifeCycleStatus = z.infer<typeof lifeCycleStatusSchema>;
+
+const brandingSchema = z.enum([
+  "block",
+  "square", 
+  "cashapp",
+  "tbd",
+]);
+
+export type Branding = z.infer<typeof brandingSchema>;
+
 const projectSchema = z.object({
   repo: repoSchema,
   description: z.string().optional(),
   title: z.string().optional(),
+  lifeCycleStatus: lifeCycleStatusSchema.optional(),
+  branding: brandingSchema,
   packages: z.array(packageSchema).optional(),
   ciChecks: z.array(badgeSchema).optional(),
   licenses: z.array(badgeSchema).optional(),
   securityScans: z.array(badgeSchema).optional(),
   scoreCards: z.array(badgeSchema).optional(),
-  sastChecks: z.array(badgeSchema).optional(),
   tests: z.array(badgeSchema).optional(),
+  contributing: z.array(badgeSchema).optional(),
 });
 
 const projectsCollection = defineCollection({

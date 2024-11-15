@@ -31,7 +31,7 @@ orgs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 		</nav>
 		<div class="projects-details">
 			{orgs.map(org => (
-				<div id={`${org}`} class="project-detail">
+				<div id={`${org}`} class="org-box">
 					<h2 class="project-detail-title">{org}</h2>
 					{projects.filter(project => project.data.repo.owner === org).map(project => (
 						<ProjectDetails {...project.data} />
@@ -85,6 +85,12 @@ orgs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 		list-style: none;
 		margin: 0 0 0 24px;
 		padding: 0;
+	}
+
+	.org-box {
+		border-top: 1px solid #e0e0e0;
+		padding-top: 24px;
+		margin-bottom: 4em;
 	}
 
 	.projects-details {

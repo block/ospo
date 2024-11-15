@@ -1,0 +1,38 @@
+---
+import type { Branding } from "../content/config";
+
+type Props = {
+  branding: Branding;
+};
+
+const { branding } = Astro.props;
+
+let imgSrc = "branding-logos/";
+
+switch (branding) {
+  case "block":
+    imgSrc += "Block_Color.png";
+    break;
+  case "square":
+    imgSrc += "Square_Mono_Black.svg";
+    break;
+  case "cashapp":
+    imgSrc += "Cash_Color.svg";
+    break;
+  case "tbd":
+    imgSrc += "TBD_Color.svg";
+    break;
+}
+
+const baseURL = import.meta.env.BASE_URL;
+---
+
+<div class="project-branding">
+  <img src={`${baseURL}/${imgSrc}`} />
+</div>
+
+<style>
+  .project-branding img {
+    height: 24px;
+  }
+</style>
