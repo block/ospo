@@ -6,7 +6,7 @@ title: "Goose"
 description: "Goose is a developer agent that operates from your command line to help you do the boring stuff."
 branding: "block"
 lifeCycleStatus: "incubation"
-website: "https://github.com/block-team/goose"
+website: "https://block.github.io/goose/"
 ciChecks:
   - type: "github-actions"
     label: "ci"
