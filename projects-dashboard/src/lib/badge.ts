@@ -1,8 +1,9 @@
-import type { BadgeType, LifeCycleStatus } from "../content/config";
+import type { BadgeType } from "../content/config";
 
 interface Repo {
   owner: string;
   name: string;
+  mainBranch?: string;
 }
 
 function getDefaultBadgeSource(
@@ -18,14 +19,16 @@ function getGithubActionsBadge(
   value = "ci.yml",
   label = "ci"
 ): [string, string] {
-  const badgeSrc = `https://img.shields.io/github/actions/workflow/status/${repo.owner}/${repo.name}/${value}?style=flat-square&branch=main&logo=github&label=${label}&logoColor=FFFFFF`;
+  const branch = repo.mainBranch ?? "main";
+  const badgeSrc = `https://img.shields.io/github/actions/workflow/status/${repo.owner}/${repo.name}/${value}?style=flat-square&branch=${branch}&logo=github&label=${label}&logoColor=FFFFFF`;
   const href = `https://github.com/${repo.owner}/${repo.name}/actions/workflows/${value}`;
   return [badgeSrc, href];
 }
 
 function getGithubLicenseBadge(repo: Repo): [string, string] {
+  const branch = repo.mainBranch ?? "main";
   const badgeSrc = `https://img.shields.io/github/license/${repo.owner}/${repo.name}?style=flat-square&color=4c1&label=license`;
-  const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/LICENSE`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/LICENSE`;
   return [badgeSrc, href];
 }
 
@@ -51,7 +54,8 @@ function getOssfBadge(repo: Repo): [string, string] {
 }
 
 function getCodecovBadge(repo: Repo): [string, string] {
-  const badgeSrc = `https://img.shields.io/codecov/c/gh/${repo.owner}/${repo.name}/main?label=codecov&style=flat-square&token=YI87CKF1LI`;
+  const branch = repo.mainBranch ?? "main";
+  const badgeSrc = `https://img.shields.io/codecov/c/gh/${repo.owner}/${repo.name}/${branch}?label=codecov&style=flat-square&token=YI87CKF1LI`;
   const href = `https://codecov.io/github/${repo.owner}/${repo.name}`;
   return [badgeSrc, href];
 }
@@ -66,8 +70,17 @@ function getNpmBadge(value?: string): [string, string] {
   if (!value) {
     throw new Error("NPM package artifact value is required for badge");
   }
-  const badgeSrc = `https://img.shields.io/npm/v/${value}.svg?style=flat-square&logo=npm&label=npm ${value}&logoColor=FFFFFF&color=4c1`;
+  const badgeSrc = `https://img.shields.io/npm/v/${value}.svg?style=flat-square&logo=npm&label=npm ${value}&logoColor=FFFFFF`;
   const href = `https://www.npmjs.com/package/${value}`;
+  return [badgeSrc, href];
+}
+
+function getPypiBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("PyPI package artifact value is required for badge");
+  }
+  const badgeSrc = `https://img.shields.io/pypi/v/${value}.svg?style=flat-square&logo=pypi&label=pypi ${value}&logoColor=FFFFFF`;
+  const href = `https://pypi.org/project/${value}`;
   return [badgeSrc, href];
 }
 
@@ -76,8 +89,17 @@ function getMavenBadge(value?: string): [string, string] {
     throw new Error("Maven package artifact value is required for badge");
   }
   const artifactName = value.split("/")[1];
-  const badgeSrc = `https://img.shields.io/maven-central/v/${value}?color=b07219&label=mvn ${artifactName}&logo=apachemaven&style=flat-square`
+  const badgeSrc = `https://img.shields.io/maven-central/v/${value}?color=b07219&label=mvn ${artifactName}&logo=apachemaven&style=flat-square`;
   const href = `https://central.sonatype.com/artifact/${value}`;
+  return [badgeSrc, href];
+}
+
+function getCocoapodsBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("Cocoapods package artifact value is required for badge");
+  }
+  const badgeSrc = `https://img.shields.io/cocoapods/v/${value}?style=flat-square&logo=cocoapods&label=pod ${value}&logoColor=FFFFFF`;
+  const href = `https://cocoapods.org/pods/${value}`;
   return [badgeSrc, href];
 }
 
@@ -91,14 +113,19 @@ function getReferenceDocsBadge(value?: string): [string, string] {
 }
 
 function getCodeOfConductBadge(repo: Repo, value?: string): [string, string] {
+  const branch = repo.mainBranch ?? "main";
   const badgeSrc = `https://img.shields.io/badge/Code of Conduct-blue?style=flat-square`;
-  const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/${value}`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/${value}`;
   return [badgeSrc, href];
 }
 
-function getContributionGuidelinesBadge(repo: Repo, value?: string): [string, string] {
+function getContributionGuidelinesBadge(
+  repo: Repo,
+  value?: string
+): [string, string] {
+  const branch = repo.mainBranch ?? "main";
   const badgeSrc = `https://img.shields.io/badge/Contribution Guidelines-orange?style=flat-square`;
-  const href = `https://github.com/${repo.owner}/${repo.name}/blob/main/${value}`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/${value}`;
   return [badgeSrc, href];
 }
 
@@ -115,7 +142,7 @@ function getMailingListBadge(value?: string): [string, string] {
   if (!value) {
     throw new Error("Mailing list URL is required for badge");
   }
-  const badgeSrc = `https://img.shields.io/badge/Mailing List-pink?style=flat-square&logo=mailboxdotorg&logoColor=FFFFFF`;
+  const badgeSrc = `https://img.shields.io/badge/Mailing List-EA4335?style=flat-square&logo=gmail&logoColor=FFFFFF`;
   const href = value;
   return [badgeSrc, href];
 }
@@ -157,6 +184,12 @@ function getGithubRepoBadge(repo: Repo): [string, string] {
   return [badgeSrc, href];
 }
 
+function getGithubDiscussionsBadge(repo: Repo): [string, string] {
+  const badgeSrc = `https://img.shields.io/badge/GitHub Discussions-black?style=flat-square&logo=github`;
+  const href = `https://github.com/${repo.owner}/${repo.name}/discussions`;
+  return [badgeSrc, href];
+}
+
 function getIssuesBadge(repo: Repo): [string, string] {
   const badgeSrc = `https://img.shields.io/github/issues/${repo.owner}/${repo.name}?style=flat-square`;
   const href = `https://github.com/${repo.owner}/${repo.name}/issues`;
@@ -190,6 +223,10 @@ export function getBadgeInfo(
       return getNpmBadge(value);
     case "maven":
       return getMavenBadge(value);
+    case "pypi":
+      return getPypiBadge(value);
+    case "cocoapods":
+      return getCocoapodsBadge(value);
     case "reference-docs":
       return getReferenceDocsBadge(value);
     case "life-cycle-status":
@@ -206,6 +243,8 @@ export function getBadgeInfo(
       return getMailingListBadge(value);
     case "issues":
       return getIssuesBadge(repo);
+    case "github-discussions":
+      return getGithubDiscussionsBadge(repo);
     default:
       return [
         getDefaultBadgeSource(type, label ?? "badge", value ?? "value"),
