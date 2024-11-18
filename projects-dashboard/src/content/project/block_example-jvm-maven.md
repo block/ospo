@@ -37,21 +37,21 @@ contributing:
     value: "https://groups.google.com/g/tbd"
 
 packages:
-  - packageName: "java-kotlin-maven-example-api"
+  - packageName: "example-jvm-maven-api"
     repoPath: "api"
     language: "java"
     artifacts:
       - type: "maven"
-        value: "xyz.block/java-kotlin-maven-example-api"
-  - packageName: "java-kotlin-maven-example-impl"
+        value: "xyz.block/example-jvm-maven-api"
+  - packageName: "example-jvm-maven-impl"
     repoPath: "impl"
     language: "java"
     artifacts:
       - type: "maven"
-        value: "xyz.block/java-kotlin-maven-example-impl"
-  - packageName: "java-kotlin-maven-example-parent"
+        value: "xyz.block/example-jvm-maven-impl"
+  - packageName: "example-jvm-maven-parent"
     language: "java"
     artifacts:
       - type: "maven"
-        value: "xyz.block/java-kotlin-maven-example-parent"
+        value: "xyz.block/example-jvm-maven-parent"
 ---
