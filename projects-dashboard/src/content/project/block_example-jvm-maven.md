@@ -1,7 +1,7 @@
 ---
 repo:
   owner: "block"
-  name: "example-java-kotlin-maven-multimodule"
+  name: "example-jvm-maven"
 title: "Maven Multimodule Example"
 description: "Example to bootstrap new Java Kotlin Maven Projects"
 branding: "block"
