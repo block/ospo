@@ -10,7 +10,7 @@ Add your project to the `src/content/projects` directory.
 
 TODO: add description of each field in the config file. For now use one of the existing projects as an example:
 
-- [example-java-kotlin-maven-multimodule](./src/content/project/block-open-source_example-java-kotlin-maven-multimodule.md)
+- [example-jvm-maven](./src/content/project/block_example-jvm-maven.md)
 - [tbdex-rs](./src/content/project/TBD54566975_tbdex-rust.md)
 - [web5-js](./src/content/project/TBD54566975_web5-js.md)
 
