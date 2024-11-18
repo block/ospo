@@ -97,7 +97,7 @@ jobs:
       # Add a comment to the PR with the link to the deployed site
       - name: Add preview comment to PR
         if: github.event_name == 'pull_request'
-        uses: thollander/actions-comment-pull-request@v2
+        uses: thollander/actions-comment-pull-request@v3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
