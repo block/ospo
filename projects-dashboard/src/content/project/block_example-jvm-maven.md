@@ -2,8 +2,8 @@
 repo:
   owner: "block"
   name: "example-jvm-maven"
-title: "Maven Multimodule Example"
-description: "Example to bootstrap new Java Kotlin Maven Projects"
+title: "JVM/Maven Example"
+description: "Example to bootstrap new JVM/Maven Projects"
 branding: "block"
 lifeCycleStatus: "incubation"
 ciChecks:
