@@ -1,4 +1,4 @@
-import type { BadgeType } from "../content/config";
+import type { Badge, BadgeType } from "../content/config";
 
 interface Repo {
   owner: string;
@@ -53,9 +53,9 @@ function getOssfBadge(repo: Repo): [string, string] {
   return [badgeSrc, href];
 }
 
-function getCodecovBadge(repo: Repo): [string, string] {
+function getCodecovBadge(repo: Repo, token?: string): [string, string] {
   const branch = repo.mainBranch ?? "main";
-  const badgeSrc = `https://img.shields.io/codecov/c/gh/${repo.owner}/${repo.name}/${branch}?label=codecov&style=flat-square&token=YI87CKF1LI`;
+  const badgeSrc = `https://img.shields.io/codecov/c/gh/${repo.owner}/${repo.name}/${branch}?label=codecov&style=flat-square&token=${token}`;
   const href = `https://codecov.io/github/${repo.owner}/${repo.name}`;
   return [badgeSrc, href];
 }
@@ -196,12 +196,49 @@ function getIssuesBadge(repo: Repo): [string, string] {
   return [badgeSrc, href];
 }
 
+function getSlackBadge(label?: string, value?: string): [string, string] {
+  if (!value) {
+    throw new Error("Slack URL is required for badge");
+  }
+
+  if (!label) {
+    throw new Error("Slack channel is required for badge");
+  }
+
+  if (!label.startsWith("#")) {
+    throw new Error("Slack channel, in the label field, must start with '#' for badge");
+  }
+
+  label = label.slice(1);
+
+  const badgeSrc = `https://img.shields.io/badge/slack-%23${label}-blue?style=flat-square&logo=slack&logoColor=FFFFFF`;
+  const href = value;
+  return [badgeSrc, href];
+}
+
+function getLinkBadge(label?: string, value?: string): [string, string] {
+  if (!value) {
+    throw new Error("Link URL is required for badge");
+  }
+
+  if (!label) {
+    throw new Error("Link label is required for badge");
+  }
+
+  const badgeSrc = `https://img.shields.io/badge/${label}-purple?style=flat-square`;
+  const href = value;
+  return [badgeSrc, href];
+}
+
 export function getBadgeInfo(
   repo: Repo,
-  type: BadgeType,
-  label?: string,
-  value?: string
+  badge: Badge,
 ): [string, string] {
+  let { type, label, value, token } = badge;
+
+  // cleanup invalid badge characters
+  label = label?.replaceAll("-", "--");
+
   switch (type) {
     case "github-actions":
       return getGithubActionsBadge(repo, value, label);
@@ -216,7 +253,7 @@ export function getBadgeInfo(
     case "ossf":
       return getOssfBadge(repo);
     case "codecov":
-      return getCodecovBadge(repo);
+      return getCodecovBadge(repo, token);
     case "tbd-vectors":
       return getTbdVectorsBadge(repo);
     case "npm":
@@ -245,6 +282,10 @@ export function getBadgeInfo(
       return getIssuesBadge(repo);
     case "github-discussions":
       return getGithubDiscussionsBadge(repo);
+    case "slack":
+      return getSlackBadge(label, value);
+    case "link":
+      return getLinkBadge(label, value);
     default:
       return [
         getDefaultBadgeSource(type, label ?? "badge", value ?? "value"),

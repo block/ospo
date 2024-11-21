@@ -68,6 +68,8 @@ const badgeTypeSchema = z.enum([
   "discord",
   "mailing-list",
   "github-discussions",
+  "slack",
+  "link",
 ]);
 
 export type BadgeType = z.infer<typeof badgeTypeSchema>;
@@ -75,6 +77,7 @@ const badgeSchema = z.object({
   type: badgeTypeSchema,
   label: z.string().optional(),
   value: z.string().optional(),
+  token: z.string().optional(),
 });
 
 export type Badge = z.infer<typeof badgeSchema>;
