@@ -1,10 +1,4 @@
-import type { Badge, BadgeType } from "../content/config";
-
-interface Repo {
-  owner: string;
-  name: string;
-  mainBranch?: string;
-}
+import type { Badge, Repo } from "../content/config";
 
 interface DefaultBadgeOptions {
   label: string;
@@ -189,10 +183,16 @@ function getLifeCycleStatusBadge(value?: string): [string, string] {
 }
 
 function getGithubRepoBadge(repo: Repo): [string, string] {
-  const badgeValue = `${repo.owner}/${repo.name.replaceAll("-", "--")}`;
+  const cleanName = repo.name.replaceAll("-", "--");
+  const cleanSubPath = repo.subPath ? `/${repo.subPath.replaceAll("-", "--")}` : "";
+  const badgeValue = `${repo.owner}/${cleanName}${cleanSubPath}`;
   const badgeColor = "gray";
   const badgeSrc = `https://img.shields.io/badge/-${badgeValue}-${badgeColor}?style=flat-square&logo=github`;
-  const href = `https://github.com/${repo.owner}/${repo.name}`;
+
+  const branch = repo.mainBranch ?? "main";
+  const subPathUrlSuffix = repo.subPath ? `/tree/${branch}/${repo.subPath}` : "";
+  const href = `https://github.com/${repo.owner}/${repo.name}${subPathUrlSuffix}`;
+
   return [badgeSrc, href];
 }
 

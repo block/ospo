@@ -26,7 +26,9 @@ const {
 
 <div class="project-details">
   <div class="project-details-header">
-    <h3 id={`${repo.owner}_${repo.name}`}>{title ?? repo.name}</h3>
+    <h3 id={`${repo.owner}_${repo.name}_${repo.subPath ?? ""}`}>
+      {title ?? repo.name}
+    </h3>
     <BrandingLogo branding={branding} />
   </div>
   <div class="project-details-header-badges">
@@ -56,14 +58,16 @@ const {
   </div>
   <p>
     {description}
-    {website && (
-      <>
-        <br />
-        <a href={website} target="_blank">
-          <small>{website}</small>
-        </a>
-      </>
-    )}
+    {
+      website && (
+        <>
+          <br />
+          <a href={website} target="_blank">
+            <small>{website}</small>
+          </a>
+        </>
+      )
+    }
   </p>
   <div class="project-details-cards-grid">
     {

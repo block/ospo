@@ -4,6 +4,7 @@ const repoSchema = z.object({
   owner: z.string(),
   name: z.string(),
   mainBranch: z.string().optional(),
+  subPath: z.string().optional(),
 });
 
 export type Repo = z.infer<typeof repoSchema>;
