@@ -3,6 +3,7 @@ import { defineCollection, z } from "astro:content";
 const repoSchema = z.object({
   owner: z.string(),
   name: z.string(),
+  mainBranch: z.string().optional(),
 });
 
 export type Repo = z.infer<typeof repoSchema>;
@@ -21,7 +22,13 @@ const languageSchema = z.enum([
 
 export type Language = z.infer<typeof languageSchema>;
 
-const artifactTypeSchema = z.enum(["npm", "maven", "reference-docs"]);
+const artifactTypeSchema = z.enum([
+  "npm",
+  "maven",
+  "reference-docs",
+  "pypi",
+  "cocoapods",
+]);
 
 export type ArtifactType = z.infer<typeof artifactTypeSchema>;
 
@@ -50,6 +57,8 @@ const badgeTypeSchema = z.enum([
   "codecov",
   "tbd-vectors",
   "npm",
+  "pypi",
+  "cocoapods",
   "maven",
   "reference-docs",
   "life-cycle-status",
@@ -58,6 +67,7 @@ const badgeTypeSchema = z.enum([
   "issues",
   "discord",
   "mailing-list",
+  "github-discussions",
 ]);
 
 export type BadgeType = z.infer<typeof badgeTypeSchema>;
@@ -79,12 +89,7 @@ const lifeCycleStatusSchema = z.enum([
 
 export type LifeCycleStatus = z.infer<typeof lifeCycleStatusSchema>;
 
-const brandingSchema = z.enum([
-  "block",
-  "square", 
-  "cashapp",
-  "tbd",
-]);
+const brandingSchema = z.enum(["block", "square", "cashapp", "tbd"]);
 
 export type Branding = z.infer<typeof brandingSchema>;
 
@@ -92,6 +97,7 @@ const projectSchema = z.object({
   repo: repoSchema,
   description: z.string().optional(),
   title: z.string().optional(),
+  website: z.string().optional(),
   lifeCycleStatus: lifeCycleStatusSchema.optional(),
   branding: brandingSchema,
   packages: z.array(packageSchema).optional(),

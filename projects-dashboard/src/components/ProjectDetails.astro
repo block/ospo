@@ -20,6 +20,7 @@ const {
   packages,
   lifeCycleStatus,
   contributing,
+  website,
 } = Astro.props;
 ---
 
@@ -53,7 +54,17 @@ const {
         ))
     }
   </div>
-  <p>{description}</p>
+  <p>
+    {description}
+    {website && (
+      <>
+        <br />
+        <a href={website} target="_blank">
+          <small>{website}</small>
+        </a>
+      </>
+    )}
+  </p>
   <div class="project-details-cards-grid">
     {
       ciChecks && (
@@ -113,7 +124,7 @@ const {
 
 <style>
   .project-details {
-    margin-bottom: 2em;
+    margin-bottom: 4rem;
   }
 
   .project-details h3 {

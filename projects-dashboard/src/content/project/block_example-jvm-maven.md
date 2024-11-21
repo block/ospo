@@ -32,7 +32,8 @@ contributing:
     value: "CONTRIBUTING.md"
   - type: "issues"
   - type: "discord"
-    value: "https://discord.gg/3fHnCA8C"
+    value: "https://discord.com/invite/block-opensource"
+  - type: "github-discussions"
   - type: "mailing-list"
     value: "https://groups.google.com/g/tbd"
 

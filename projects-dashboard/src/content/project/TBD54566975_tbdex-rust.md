@@ -4,6 +4,7 @@ repo:
   name: "tbdex-rs"
 title: "tbDEX Rust"
 description: "The tbDEX Rust implementation"
+website: "https://developer.tbd.website/docs/tbdex/"
 branding: "tbd"
 lifeCycleStatus: "archived"
 ciChecks:

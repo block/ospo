@@ -6,7 +6,16 @@ import ProjectDetails from '../components/ProjectDetails.astro';
 const projects = await getCollection('project');
 
 const orgs = Array.from(new Set(projects.map(project => project.data.repo.owner)));
+
+// sort orgs alphabetically
 orgs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+
+// sort projects alphabetically by title, then by repo name
+projects.sort((a, b) => {
+	const aName = a.data.title ?? a.data.repo.name;
+	const bName = b.data.title ?? b.data.repo.name;
+	return aName.toLowerCase().localeCompare(bName.toLowerCase());
+});
 ---
 
 <BaseLayout isWide>
@@ -47,13 +56,6 @@ orgs.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
 		display: flex;
 		flex-direction: row;
 	}
-
-	/* .projects-sidebar {
-		list-style: none;
-		margin: 0;
-		padding: 0;
-		width: 200px;
-	} */
 
 	.projects-sidebar {
 		font-family: "Space-Grotesk", sans-serif;
