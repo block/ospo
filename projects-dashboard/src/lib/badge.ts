@@ -6,12 +6,24 @@ interface Repo {
   mainBranch?: string;
 }
 
-function getDefaultBadgeSource(
-  type: string,
-  label: string,
-  value: string
-): string {
-  return `https://img.shields.io/${type}/${label}-${value}-purple?style=flat-square`;
+interface DefaultBadgeOptions {
+  label: string;
+  value?: string;
+  logo?: string;
+  color?: string;
+}
+
+function getDefaultBadgeSource({
+  label,
+  value,
+  logo,
+  color = "purple",
+}: DefaultBadgeOptions): string {
+  const cleanLabel = label.replaceAll("-", "--");
+  const cleanValue = value?.replaceAll("-", "--");
+  const valueParam = cleanValue ? `-${cleanValue}` : "";
+  const logoParam = logo ? `&logo=${logo}` : "";
+  return `https://img.shields.io/badge/${cleanLabel}${valueParam}-${color}?style=flat-square${logoParam}`;
 }
 
 function getGithubActionsBadge(
@@ -209,9 +221,15 @@ function getSlackBadge(label?: string, value?: string): [string, string] {
     throw new Error("Slack channel, in the label field, must start with '#' for badge");
   }
 
-  label = label.slice(1);
+  const channel = `%23${label.slice(1)}`;
 
-  const badgeSrc = `https://img.shields.io/badge/slack-%23${label}-blue?style=flat-square&logo=slack&logoColor=FFFFFF`;
+  const badgeSrc = getDefaultBadgeSource({
+    label: "slack",
+    value: channel,
+    color: "blue",
+    logo: "slack",
+  });
+
   const href = value;
   return [badgeSrc, href];
 }
@@ -225,7 +243,10 @@ function getLinkBadge(label?: string, value?: string): [string, string] {
     throw new Error("Link label is required for badge");
   }
 
-  const badgeSrc = `https://img.shields.io/badge/${label}-purple?style=flat-square`;
+  const badgeSrc = getDefaultBadgeSource({
+    label,
+    color: "purple",
+  });
   const href = value;
   return [badgeSrc, href];
 }
@@ -237,7 +258,6 @@ export function getBadgeInfo(
   let { type, label, value, token } = badge;
 
   // cleanup invalid badge characters
-  label = label?.replaceAll("-", "--");
 
   switch (type) {
     case "github-actions":
@@ -287,9 +307,6 @@ export function getBadgeInfo(
     case "link":
       return getLinkBadge(label, value);
     default:
-      return [
-        getDefaultBadgeSource(type, label ?? "badge", value ?? "value"),
-        "",
-      ];
+      throw new Error(`Unknown badge type: ${type}`);
   }
 }
