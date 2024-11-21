@@ -18,6 +18,7 @@ securityScans:
   - type: "fossa-security"
 tests:
   - type: "codecov"
+    token: "YI87CKF1LI"
 packages:
   - packageName: "xyz.block.tbdex"
     repoPath: "bound/kt"

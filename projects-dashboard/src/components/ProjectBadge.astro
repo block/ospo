@@ -7,12 +7,9 @@ type Props = {
   badge: Badge;
 };
 
-const {
-  repo,
-  badge: { type, label, value },
-} = Astro.props;
+const { repo, badge } = Astro.props;
 
-const [badgeSrc, href] = getBadgeInfo(repo, type, label, value);
+const [badgeSrc, href] = getBadgeInfo(repo, badge);
 ---
 
 <div class="project-badge">
