@@ -4,6 +4,7 @@ const repoSchema = z.object({
   owner: z.string(),
   name: z.string(),
   mainBranch: z.string().optional(),
+  subPath: z.string().optional(),
 });
 
 export type Repo = z.infer<typeof repoSchema>;
@@ -68,6 +69,8 @@ const badgeTypeSchema = z.enum([
   "discord",
   "mailing-list",
   "github-discussions",
+  "slack",
+  "link",
 ]);
 
 export type BadgeType = z.infer<typeof badgeTypeSchema>;
@@ -75,6 +78,7 @@ const badgeSchema = z.object({
   type: badgeTypeSchema,
   label: z.string().optional(),
   value: z.string().optional(),
+  token: z.string().optional(),
 });
 
 export type Badge = z.infer<typeof badgeSchema>;

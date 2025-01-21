@@ -29,7 +29,7 @@ projects.sort((a, b) => {
 					<ul class="projects-list">
 						{projects.filter(project => project.data.repo.owner === org).map(({data: project}) => (
 							<li>
-								<a href={`#${project.repo.owner}_${project.repo.name}`}>
+								<a href={`#${project.repo.owner}_${project.repo.name}_${project.repo.subPath ?? ""}`}>
 									{project.title ?? project.repo.name}
 								</a>
 							</li>
