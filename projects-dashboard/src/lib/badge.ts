@@ -251,6 +251,18 @@ function getLinkBadge(label?: string, value?: string): [string, string] {
   return [badgeSrc, href];
 }
 
+function getRubygemsBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("gem name required for badge");
+  }
+
+
+  let badgeSrc = `https://img.shields.io/gem/v/${value}`
+  let href = `https://rubygems.org/gems/${value}`
+
+  return [badgeSrc, href];
+}
+
 export function getBadgeInfo(
   repo: Repo,
   badge: Badge,
@@ -306,6 +318,8 @@ export function getBadgeInfo(
       return getSlackBadge(label, value);
     case "link":
       return getLinkBadge(label, value);
+    case "rubygems":
+      return getRubygemsBadge(value);
     default:
       throw new Error(`Unknown badge type: ${type}`);
   }
