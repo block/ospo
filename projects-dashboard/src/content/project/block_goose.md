@@ -10,7 +10,7 @@ website: "https://block.github.io/goose/"
 ciChecks:
   - type: "github-actions"
     label: "ci"
-    value: "ci.yaml"
+    value: "ci.yml"
 licenses:
   - type: "github-license"
 securityScans:
