@@ -2,6 +2,7 @@
 repo:
   owner: cashapp
   name: hermit
+  defaultBranch: "master"
 title: hermit
 description: Hermit manages isolated, self-bootstrapping sets of tools in software projects.
 branding: cashapp

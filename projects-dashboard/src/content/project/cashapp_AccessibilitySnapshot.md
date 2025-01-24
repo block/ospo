@@ -2,7 +2,7 @@
 repo:
   owner: "cashapp"
   name: "AccessibilitySnapshot"
-  mainBranch: "master"
+  defaultBranch: "master"
 title: "AccessibilitySnapshot"
 description: "Easy regression testing for iOS accessibility"
 branding: "cashapp"
