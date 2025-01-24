@@ -9,7 +9,7 @@ lifeCycleStatus: mature
 ciChecks:
   - type: github-actions
     label: test
-    value: ci.yml
+    value: ci.yaml
 licenses:
   - type: github-license
 securityScans:
