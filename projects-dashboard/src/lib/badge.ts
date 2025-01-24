@@ -25,14 +25,14 @@ function getGithubActionsBadge(
   value = "ci.yml",
   label = "ci"
 ): [string, string] {
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const badgeSrc = `https://img.shields.io/github/actions/workflow/status/${repo.owner}/${repo.name}/${value}?style=flat-square&branch=${branch}&logo=github&label=${label}&logoColor=FFFFFF`;
   const href = `https://github.com/${repo.owner}/${repo.name}/actions/workflows/${value}`;
   return [badgeSrc, href];
 }
 
 function getGithubLicenseBadge(repo: Repo): [string, string] {
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const badgeSrc = `https://img.shields.io/github/license/${repo.owner}/${repo.name}?style=flat-square&color=4c1&label=license`;
   const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/LICENSE`;
   return [badgeSrc, href];
@@ -60,7 +60,7 @@ function getOssfBadge(repo: Repo): [string, string] {
 }
 
 function getCodecovBadge(repo: Repo, token?: string): [string, string] {
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const badgeSrc = `https://img.shields.io/codecov/c/gh/${repo.owner}/${repo.name}/${branch}?label=codecov&style=flat-square&token=${token}`;
   const href = `https://codecov.io/github/${repo.owner}/${repo.name}`;
   return [badgeSrc, href];
@@ -119,7 +119,7 @@ function getReferenceDocsBadge(value?: string): [string, string] {
 }
 
 function getCodeOfConductBadge(repo: Repo, value?: string): [string, string] {
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const badgeSrc = `https://img.shields.io/badge/Code of Conduct-blue?style=flat-square`;
   const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/${value}`;
   return [badgeSrc, href];
@@ -129,7 +129,7 @@ function getContributionGuidelinesBadge(
   repo: Repo,
   value?: string
 ): [string, string] {
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const badgeSrc = `https://img.shields.io/badge/Contribution Guidelines-orange?style=flat-square`;
   const href = `https://github.com/${repo.owner}/${repo.name}/blob/${branch}/${value}`;
   return [badgeSrc, href];
@@ -189,7 +189,7 @@ function getGithubRepoBadge(repo: Repo): [string, string] {
   const badgeColor = "gray";
   const badgeSrc = `https://img.shields.io/badge/-${badgeValue}-${badgeColor}?style=flat-square&logo=github`;
 
-  const branch = repo.mainBranch ?? "main";
+  const branch = repo.defaultBranch ?? "main";
   const subPathUrlSuffix = repo.subPath ? `/tree/${branch}/${repo.subPath}` : "";
   const href = `https://github.com/${repo.owner}/${repo.name}${subPathUrlSuffix}`;
 

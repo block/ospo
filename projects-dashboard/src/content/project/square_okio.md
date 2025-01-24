@@ -2,7 +2,7 @@
 repo:
   owner: "square"
   name: "okio"
-  mainBranch: "master"
+  defaultBranch: "master"
 title: "okio"
 description: "A modern I/O library for Android, Java, and Kotlin Multiplatform."
 branding: "square"

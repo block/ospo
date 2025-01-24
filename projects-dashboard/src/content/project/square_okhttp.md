@@ -2,7 +2,7 @@
 repo:
   owner: "square"
   name: "okhttp"
-  mainBranch: "master"
+  defaultBranch: "master"
 title: "OkHttp"
 description: "Square’s meticulous HTTP client for the JVM, Android, and GraalVM."
 branding: "square"

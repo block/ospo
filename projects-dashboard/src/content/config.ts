@@ -3,7 +3,7 @@ import { defineCollection, z } from "astro:content";
 const repoSchema = z.object({
   owner: z.string(),
   name: z.string(),
-  mainBranch: z.string().optional(),
+  defaultBranch: z.string().optional(),
   subPath: z.string().optional(),
 });
 
