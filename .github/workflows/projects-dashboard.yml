@@ -32,6 +32,7 @@ jobs:
         env:
           GITHUB_HEAD_REF: ${{ github.head_ref }}
           GITHUB_REF_NAME: ${{ github.ref_name }}
+          PR_NUMBER: ${{ github.event.number }}
         run: |
           if [ "$GITHUB_HEAD_REF" != "" ]; then
             # This is a pull request
@@ -43,9 +44,7 @@ jobs:
 
           TARGET_PATH=projects-dashboard
           if [ "$BRANCH" != "main" ]; then
-            # sanitize branch name
-            BRANCH=$(echo "$BRANCH" | sed 's/[^a-zA-Z0-9-]/_/g')
-            TARGET_PATH=projects-dashboard-preview-$BRANCH
+            TARGET_PATH=projects-dashboard-preview-pr-$PR_NUMBER
           fi
           echo "path=$TARGET_PATH" >> $GITHUB_OUTPUT
 
