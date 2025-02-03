@@ -19,6 +19,7 @@ const languageSchema = z.enum([
   "java",
   "python",
   "ruby",
+  "objective-c",
 ]);
 
 export type Language = z.infer<typeof languageSchema>;
@@ -29,7 +30,10 @@ const artifactTypeSchema = z.enum([
   "reference-docs",
   "pypi",
   "cocoapods",
-  "rubygems"
+  "rubygems",
+  "spi", // Swift Package Index
+  "cocoapods",
+  "carthage",
 ]);
 
 export type ArtifactType = z.infer<typeof artifactTypeSchema>;
@@ -72,7 +76,10 @@ const badgeTypeSchema = z.enum([
   "github-discussions",
   "slack",
   "link",
-  "rubygems"
+  "rubygems",
+  "spi",
+  "cocoapods",
+  "carthage",
 ]);
 
 export type BadgeType = z.infer<typeof badgeTypeSchema>;
