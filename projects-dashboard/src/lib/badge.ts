@@ -256,9 +256,19 @@ function getRubygemsBadge(value?: string): [string, string] {
     throw new Error("gem name required for badge");
   }
 
-
   let badgeSrc = `https://img.shields.io/gem/v/${value}`
   let href = `https://rubygems.org/gems/${value}`
+
+  return [badgeSrc, href];
+}
+
+function getSpiBadge(value?: string): [string, string] {
+  if (!value) {
+    throw new Error("gem name required for badge");
+  }
+
+  let badgeSrc = `https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2F${encodeURIComponent(value)}%2Fbadge%3Ftype%3Dswift-versions`
+  let href = `https://swiftpackageindex.com/${value}`
 
   return [badgeSrc, href];
 }
@@ -320,6 +330,8 @@ export function getBadgeInfo(
       return getLinkBadge(label, value);
     case "rubygems":
       return getRubygemsBadge(value);
+    case "spi":
+      return getSpiBadge(value);
     default:
       throw new Error(`Unknown badge type: ${type}`);
   }
