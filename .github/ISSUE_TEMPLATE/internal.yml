@@ -8,7 +8,7 @@ body:
     id: internal-notice
     attributes:
       value: |
-        For Block Employee Use Only. Link the internal topic here. Be sure not to leak internal 
+        For Block Employee Use Only. Link the internal issue here. Be sure not to leak internal 
         information in this issue description or the title. For instance, "Legal Topic #854" is a 
         good title name, because it does not denote what this is about, only that it is related 
         to something within Legal stakeholders, and calls out the internal issue number. Place the 
