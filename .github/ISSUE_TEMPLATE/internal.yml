@@ -4,7 +4,16 @@ title: "[INTERNAL]: <short description> #<Internal Issue Number>"
 labels: ["internal"]
 projects: ["block/1"]
 body:
-  - type: textarea
+  - type: markdown
+    id: internal-notice
+    attributes:
+      value: |
+        For Block Employee Use Only. Link the internal topic here. Be sure not to leak internal 
+        information in this issue description or the title. For instance, "Legal Topic #854" is a 
+        good title name, because it does not denote what this is about, only that it is related 
+        to something within Legal stakeholders, and calls out the internal issue number. Place the 
+        internal issue link in this description field. 
+  - type: input
     id: internal-issue
     attributes:
       label: Internal Issue
