@@ -1,0 +1,14 @@
+name: Internal Issue (Block Employee Use Only)
+description: Link to internal systems, used for progress tracking only
+title: "[INTERNAL]: <short description>"
+labels: ["internal"]
+projects: ["block/1"]
+body:
+  - type: textarea
+    id: internal-issue
+    attributes:
+      label: Internal Issue
+      description: For Block Employee Use Only 
+      placeholder: Link to Internal GitHub Issue
+    validations:
+      required: true
