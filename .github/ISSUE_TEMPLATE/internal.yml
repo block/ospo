@@ -1,6 +1,6 @@
 name: Internal Issue (Block Employee Use Only)
 description: Link to internal systems, used for progress tracking only
-title: "[INTERNAL]: <short description> #<Internal Issue Number>"
+title: "[INTERNAL]: #<Internal Issue Number>"
 labels: ["internal"]
 projects: ["block/1"]
 body:
@@ -10,10 +10,10 @@ body:
       value: |
         For Block Employee Use Only. 
         
-        Link the internal issue here. Be sure not to leak internal 
-        information in this issue description or the title. For instance, "Legal Topic #854" is a 
-        good title name, because it does not denote what this is about, only that it is related 
-        to something within Legal stakeholders, and calls out the internal issue number. Place the 
+        Link the internal issue here. Be sure not to leak internal information in this 
+        issue description or the title. Do not include context to what this is about. 
+        For instance, "Topic #854" is a good title name only that it is related 
+        to something within an internal system, and calls out the internal issue number. Place the 
         internal issue link below. 
   - type: input
     id: internal-issue
