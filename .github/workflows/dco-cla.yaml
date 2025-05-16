@@ -29,7 +29,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           DCO_CHECK_VERBOSE: '1'
-          DCO_CHECK_EXCLUDE_PATTERN: '@(block.xyz|squareup.com|cash.app)$'
+          DCO_CHECK_EXCLUDE_PATTERN: '@(block.xyz|squareup.com|cash.app|tbd.email)$'
           DCO_CHECK_EXCLUDE_EMAILS: 29139614+renovate[bot]@users.noreply.github.com
         run: |
           pip3 install -U dco-check
