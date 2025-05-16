@@ -12,6 +12,8 @@ jobs:
         id: check_required_actions
         with:
           script: |
+            core.setOutput('default_branch', context.payload.repository.default_branch)
+
             if(!context.payload.repository.license) {
               return;
             }
@@ -32,6 +34,7 @@ jobs:
           DCO_CHECK_VERBOSE: '1'
           DCO_CHECK_EXCLUDE_PATTERN: '@(block.xyz|squareup.com|cash.app|tbd.email)$'
           DCO_CHECK_EXCLUDE_EMAILS: 29139614+renovate[bot]@users.noreply.github.com
+          DCO_CHECK_DEFAULT_BRANCH: ${{ steps.check_required_actions.outputs.default_branch }}
         run: |
           pip3 install -U dco-check
           dco-check
