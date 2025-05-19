@@ -1,0 +1,153 @@
+name: "Releaser"
+description: "Standardized release process with support from Block OSPO"
+
+inputs:
+  release-type:
+    description: "Release type"
+    required: true
+  node-version:
+    description: "Node version"
+    required: false
+  npm-token:
+    description: "NPM token"
+    required: false
+  prepare-cmds:
+    description: "Publish build preparation commands (ie. `npm ci && npm run test && npm run build`)"
+    required: false
+  package-manager:
+    description: "Package manager (ie. npm, yarn, pnpm, maven, gradle, etc.)"
+    required: false
+  retry-publish:
+    description: "Retry publishing"
+    required: false
+
+runs:
+  using: "composite"
+  steps:
+    - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      name: "Validate Context"
+      with:
+        release-type: ${{ inputs.release-type }}
+        node-version: ${{ inputs.node-version }}
+        npm-token: ${{ inputs.npm-token }}
+        package-manager: ${{ inputs.package-manager }}
+        script: |
+          // Reject non-default branches
+          const defaultBranch   = context.payload.repository.default_branch;
+          const isDefaultBranch = context.ref === `refs/heads/${defaultBranch}`;
+          if (!isDefaultBranch) {
+            core.setFailed(`Refusing to publish from non-default branch ${context.ref}`);
+            return;
+          }
+
+          // Allow only default branch pushes or manual runs
+          if (!context.eventName.startsWith('push') && !context.eventName.startsWith('workflow_dispatch')) {
+            core.setFailed(`Refusing to publish for event ${context.eventName}`);
+            return;
+          }
+
+          const releaseType = core.getInput('release-type');
+          if (releaseType === 'node') {
+            const nodeVersion = core.getInput('node-version');
+            const npmToken = core.getInput('npm-token');
+            const packageManager = core.getInput('package-manager');
+            const idToken = process.env.ACTIONS_ID_TOKEN_REQUEST_TOKEN;
+            if (!nodeVersion) {
+              core.setFailed("Error: node-version is required when release-type is 'node'");
+              return;
+            }
+            if (!npmToken) {
+              core.setFailed("Error: npm-token is required when release-type is 'node'");
+              return;
+            }
+            if (!packageManager) {
+              core.setFailed("Error: package-manager is required when release-type is 'node'");
+              return;
+            }
+            if (!['npm', 'yarn', 'pnpm'].includes(packageManager)) {
+              core.setFailed("Error: package-manager must be 'npm', 'yarn', or 'pnpm' when release-type is 'node'");
+              return;
+            }
+            if (!idToken) {
+              core.setFailed("Error: permission id-token: write is required to generate provenance for npm");
+              return;
+            }
+          } else {
+            core.setFailed(`Error: unsupported release-type: ${releaseType}`);
+            return;
+          }
+
+          core.info(`✔ Context Guard passed by ${context.actor} on ${context.ref}`);
+
+    - if: ${{ inputs.retry-publish == '' || inputs.retry-publish == 'false' }}
+      uses: googleapis/release-please-action@a02a34c4d625f9be7cb89156071d8567266a2445 # v4.2.0
+      id: release
+      with:
+        release-type: ${{ inputs.release-type }}
+
+    - shell: bash
+      run: |
+        echo 'Release Debug Outputs:\n${{ toJSON(steps.release.outputs) }}'
+
+    - id: check-release
+      if: ${{ inputs.retry-publish || steps.release.outputs.release_created }}
+      shell: bash
+      run: echo "::set-output name=publish::true"
+
+    - uses: actions/github-script@60a0d83039c74a4aee543508d2ffcb1c3799cdea # v7.0.1
+      if: ${{ steps.check-release.outputs.publish }}
+      name: "Validate caller to publishing"
+      with:
+        script: |
+          // Actor must be admin
+          const {data} = await github.rest.repos.getCollaboratorPermissionLevel({
+            owner: context.repo.owner,
+            repo:  context.repo.repo,
+            username: context.actor
+          });
+          if (!['admin','maintain'].includes(data.permission)) {
+            core.setFailed(
+              `User ${context.actor} has "${data.permission}" permission; ` +
+              `must be admin or maintainer`
+            );
+            return;
+          }
+
+          core.info(`✔ Publishing Guard passed by ${context.actor} on ${context.ref}`);
+
+    - if: ${{ steps.check-release.outputs.publish }}
+      uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+
+    - if: ${{ steps.check-release.outputs.publish && inputs.release-type == 'node' }}
+      uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+      with:
+        node-version: ${{ inputs.node-version }}
+        registry-url: "https://registry.npmjs.org"
+
+    - if: ${{ steps.check-release.outputs.publish && inputs.prepare-cmds != '' }}
+      shell: bash
+      run: ${{ inputs.prepare-cmds }}
+
+    - if: ${{ steps.check-release.outputs.publish && inputs.release-type == 'node' }}
+      shell: bash
+      env:
+        PACKAGE_MANAGER: ${{ inputs.package-manager }}
+        NODE_AUTH_TOKEN: ${{ inputs.npm-token }}
+      run: |
+        echo "Publishing with $PACKAGE_MANAGER"
+
+        if [ "$PACKAGE_MANAGER" == "yarn" ]; then
+          # provenance is not supported for yarn < 4.9.0
+          # workaround: https://github.com/yarnpkg/berry/issues/5430#issuecomment-1768499845
+          YARN_VERSION=$(yarn --version)
+          YARN_VERSION_MAJOR=$(echo "$YARN_VERSION" | cut -d. -f1)
+          YARN_VERSION_MINOR=$(echo "$YARN_VERSION" | cut -d. -f2)
+          if [ "$YARN_VERSION_MAJOR" -lt 4 ] || [ "$YARN_VERSION_MAJOR" -eq 4 -a "$YARN_VERSION_MINOR" -lt 9 ]; then
+            yarn pack -f package.tgz
+            npm publish package.tgz --access public --provenance
+          else
+            yarn publish --access public --provenance
+          fi
+        else
+          $PACKAGE_MANAGER publish --access public --provenance
+        fi
