@@ -15,3 +15,4 @@ jobs:
       - uses: ko-build/setup-ko@d006021bd0c28d1ce33a07e7943d48b079944c8d # v0.9
       - run: |
           KO_DOCKER_REPO=ghcr.io/block/ospo/external-contributor-legal-checks ko build
+        working-directory: external-contributor-legal-checks
