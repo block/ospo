@@ -59,7 +59,6 @@ The Block Open Source Governance Committee (GC) has final authority over this pr
 The current GC members are:
 
 * Manik Surtani, Head of Open Source Program Office, Block
-* Andrew Lee Rubinger, Head of Open Source, TBD
 * Nidhi Nahar, Head of Patents and Open Source, Block
 
 Members are not to be contacted individually. The GC may be reached through `TODO Update this` and is an available resource in mediation or for sensitive cases beyond the scope of project maintainers. It operates as a "Self-appointing council or board" as defined by Red Hat: [Open Source Governance Models](https://www.redhat.com/en/blog/understanding-open-source-governance-models).
