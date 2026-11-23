@@ -58,7 +58,7 @@ jobs:
           npm install -g pnpm
 
       - name: Install, build, and upload your site
-        uses: withastro/action@b7d53628f8b666036b0238aadb0b984a2a489f26 # v6
+        uses: withastro/action@a8b97df764791eb61fbf3338ef713b0e61ae05c5 # v6
         with:
           path: ./projects-dashboard
           node-version: 20
